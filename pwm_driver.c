@@ -164,6 +164,16 @@ static int	__init pwm_driver_init(void)
 static void 	__exit pwm_driver_exit(void) 
 {
 	printk("Exiting\n");
+	/* Sysfs cleanup */
+	kobject_put(kobj_ref); 
+        sysfs_remove_file(kernel_kobj, &pwm_attr.attr);
+	/* Device cleanup */
+        device_destroy(dev_class,dev);
+        class_destroy(dev_class);
+	/* Class cleanup */
+        cdev_del(&pwm_dev);
+        unregister_chrdev_region(dev, 1);
+        pr_info("Device Driver Remove...Done!!!\n");
 	return;
 }
 
